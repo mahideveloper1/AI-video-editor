@@ -6,7 +6,7 @@ const ExportButton = ({ sessionId, videoId, disabled = false }) => {
   const [exportProgress, setExportProgress] = useState(null);
 
   const handleExport = async () => {
-    if (!sessionId || !videoId || disabled) {
+    if (!sessionId || disabled) {
       alert('No video session found. Please upload a video first.');
       return;
     }
@@ -15,8 +15,8 @@ const ExportButton = ({ sessionId, videoId, disabled = false }) => {
     setExportProgress('Preparing export...');
 
     try {
-      // Call export API
-      const response = await exportVideo(sessionId, videoId);
+      // Call export API - let backend generate the filename
+      const response = await exportVideo(sessionId);
 
       setExportProgress('Processing video...');
 
