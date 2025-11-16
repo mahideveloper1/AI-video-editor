@@ -78,13 +78,11 @@ function App() {
       // Add AI response to chat
       // Backend now returns message as an object with {type, content, timestamp, metadata}
       const aiContent = response.message?.content || response.message || response.response || 'Subtitle updated successfully!';
-      const aiMetadata = response.message?.metadata || response.extracted_params || response.metadata || {};
 
       addChatMessage({
         type: MESSAGE_TYPES.AI,
         content: aiContent,
         timestamp: new Date(),
-        metadata: aiMetadata,
       });
 
       // Update subtitles if provided
@@ -222,7 +220,7 @@ function App() {
 
               {/* Preview & Export Buttons */}
               <div className="p-5 bg-white rounded-xl shadow-sm">
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-row gap-3">
                   {/* Preview Button */}
                   <PreviewButton
                     sessionId={session.sessionId}
@@ -253,36 +251,6 @@ function App() {
                 )}
               </div>
             </>
-          )}
-
-          {/* Subtitle List */}
-          {session.subtitles && session.subtitles.length > 0 && (
-            <div className="p-5 bg-white rounded-xl shadow-sm max-h-[400px] overflow-y-auto scrollbar-custom">
-              <h3 className="text-base font-semibold text-gray-800 mb-4">
-                Current Subtitles ({session.subtitles.length})
-              </h3>
-              <div className="flex flex-col gap-3">
-                {session.subtitles.map((subtitle, index) => (
-                  <div key={index} className="p-3 bg-gray-50 border-l-3 border-primary rounded-md">
-                    <div className="text-xs font-semibold text-primary mb-1.5">
-                      {subtitle.start_time || subtitle.startTime}s -{' '}
-                      {subtitle.end_time || subtitle.endTime}s
-                    </div>
-                    <div className="text-sm text-gray-800 mb-1.5 font-medium">
-                      {subtitle.text}
-                    </div>
-                    <div className="text-xs text-gray-600 flex items-center gap-1.5">
-                      {subtitle.font_family || subtitle.fontFamily} •{' '}
-                      {subtitle.font_size || subtitle.fontSize}px •{' '}
-                      <span
-                        className="inline-block w-4 h-4 rounded border border-gray-200"
-                        style={{ backgroundColor: subtitle.color }}
-                      ></span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           )}
         </div>
 
