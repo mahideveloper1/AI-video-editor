@@ -73,11 +73,15 @@ function App() {
       console.log('API Response:', response);
 
       // Add AI response to chat
+      // Backend now returns message as an object with {type, content, timestamp, metadata}
+      const aiContent = response.message?.content || response.message || response.response || 'Subtitle updated successfully!';
+      const aiMetadata = response.message?.metadata || response.extracted_params || response.metadata || {};
+
       addChatMessage({
         type: MESSAGE_TYPES.AI,
-        content: response.message || response.response || 'Subtitle updated successfully!',
+        content: aiContent,
         timestamp: new Date(),
-        metadata: response.extracted_params || response.metadata || {},
+        metadata: aiMetadata,
       });
 
       // Update subtitles if provided
