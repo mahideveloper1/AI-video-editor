@@ -24,16 +24,23 @@ const ExportButton = ({ sessionId, videoId, disabled = false }) => {
       if (response.download_url || response.downloadUrl) {
         setExportProgress('Download ready!');
 
-        // Download the file
+        // Extract filename from the download URL and use proper download endpoint
         const downloadUrl = response.download_url || response.downloadUrl;
         const filename = response.filename || `edited-video-${Date.now()}.mp4`;
 
-        downloadFile(downloadUrl, filename);
+        // Extract the actual filename from the URL (e.g., /outputs/abc123_video.mp4 -> abc123_video.mp4)
+        const urlFilename = downloadUrl.split('/').pop();
 
+        // Use the dedicated download endpoint that forces download instead of playing
+        const downloadEndpoint = `/api/download/${urlFilename}`;
+
+        await downloadFile(downloadEndpoint, filename);
+
+        setExportProgress('Download complete!');
         setTimeout(() => {
           setExportProgress(null);
           setIsExporting(false);
-        }, 2000);
+        }, 1500);
       } else {
         throw new Error('No download URL received from server');
       }
