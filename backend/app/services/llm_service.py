@@ -14,6 +14,13 @@ from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langgraph.graph import StateGraph, END
 
+# Import Google Gemini support
+try:
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    GEMINI_AVAILABLE = True
+except ImportError:
+    GEMINI_AVAILABLE = False
+
 from app.config import settings
 from app.models.schemas import Subtitle, SubtitleStyle, ChatMessage, MessageType
 from app.models.state import VideoEditState, SubtitleEdit, LLMResponse
@@ -41,6 +48,17 @@ class LLMService:
                 model=settings.llm_model,
                 temperature=settings.llm_temperature,
                 api_key=settings.anthropic_api_key
+            )
+        elif settings.llm_provider == "google" or settings.llm_provider == "gemini":
+            if not GEMINI_AVAILABLE:
+                raise ValueError(
+                    "Google Gemini support not available. "
+                    "Install with: pip install langchain-google-genai"
+                )
+            return ChatGoogleGenerativeAI(
+                model=settings.llm_model,
+                temperature=settings.llm_temperature,
+                google_api_key=settings.google_api_key
             )
         else:
             raise ValueError(f"Unsupported LLM provider: {settings.llm_provider}")

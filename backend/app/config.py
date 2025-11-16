@@ -25,8 +25,9 @@ class Settings(BaseSettings):
     # LLM Settings
     openai_api_key: str = ""
     anthropic_api_key: str = ""
-    llm_provider: str = "openai"  # "openai" or "anthropic"
-    llm_model: str = "gpt-4o-mini"  # or "claude-3-5-sonnet-20241022"
+    google_api_key: str = ""
+    llm_provider: str = "openai"  # "openai", "anthropic", or "google"/"gemini"
+    llm_model: str = "gpt-4o-mini"  # or "claude-3-5-sonnet-20241022" or "gemini-pro"
     llm_temperature: float = 0.7
 
     # File Upload Settings
