@@ -160,17 +160,29 @@ Example: {{"text": "Hello", "start_time": "0", "end_time": "5", "font_color": "r
             else:
                 params = {}
 
-        # Convert time strings to seconds
-        if params.get("start_time"):
-            params["start_time"] = parse_time_string(str(params["start_time"])) or 0.0
-        if params.get("end_time"):
-            params["end_time"] = parse_time_string(str(params["end_time"])) or 5.0
+        # Convert time strings to seconds and ensure valid values
+        start_time = params.get("start_time")
+        if start_time:
+            start_time = parse_time_string(str(start_time))
+        start_time = start_time if start_time is not None else 0.0
+
+        end_time = params.get("end_time")
+        if end_time:
+            end_time = parse_time_string(str(end_time))
+
+        # If no end_time provided, default to start_time + 3 seconds
+        if end_time is None:
+            end_time = start_time + 3.0
+
+        # Ensure end_time is after start_time
+        if end_time <= start_time:
+            end_time = start_time + 3.0
 
         # Create subtitle edit
         subtitle_edit: SubtitleEdit = {
             "text": params.get("text") or "",
-            "start_time": params.get("start_time", 0.0),
-            "end_time": params.get("end_time", 5.0),
+            "start_time": float(start_time),
+            "end_time": float(end_time),
             "font_family": params.get("font_family"),
             "font_size": params.get("font_size"),
             "font_color": params.get("font_color"),
