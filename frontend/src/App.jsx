@@ -13,6 +13,7 @@ function App() {
     initializeSession,
     addChatMessage,
     updateSubtitles,
+    updateVideoUrl,
     setProcessing,
     setError,
     clearError,
@@ -106,6 +107,20 @@ function App() {
     }
   };
 
+  // Handle export success
+  const handleExportSuccess = (exportData) => {
+    // Update video player to show exported video with burned subtitles
+    const exportedVideoUrl = `http://localhost:8000${exportData.download_url}`;
+    updateVideoUrl(exportedVideoUrl);
+
+    // Add system message
+    addChatMessage({
+      type: MESSAGE_TYPES.SYSTEM,
+      content: '✓ Video exported successfully! Preview the result above. You can continue editing or download the video.',
+      timestamp: new Date(),
+    });
+  };
+
   // Handle new upload (reset)
   const handleNewUpload = () => {
     setShowUploader(true);
@@ -188,6 +203,7 @@ function App() {
                   sessionId={session.sessionId}
                   videoId={session.videoId}
                   disabled={!session.videoId || session.subtitles.length === 0}
+                  onExportSuccess={handleExportSuccess}
                 />
                 {session.subtitles.length === 0 && (
                   <p className="mt-3 text-sm text-gray-600 text-center">

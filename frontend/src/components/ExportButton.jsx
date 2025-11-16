@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { exportVideo, downloadFile } from '../services/api';
 
-const ExportButton = ({ sessionId, videoId, disabled = false }) => {
+const ExportButton = ({ sessionId, videoId, disabled = false, onExportSuccess }) => {
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(null);
 
@@ -22,7 +22,12 @@ const ExportButton = ({ sessionId, videoId, disabled = false }) => {
 
       // Check if we have a download URL
       if (response.download_url || response.downloadUrl) {
-        setExportProgress('Download ready!');
+        setExportProgress('Export complete!');
+
+        // Notify parent component about successful export (to update video player)
+        if (onExportSuccess) {
+          onExportSuccess(response);
+        }
 
         // Extract filename from the download URL and use proper download endpoint
         const downloadUrl = response.download_url || response.downloadUrl;
@@ -36,7 +41,7 @@ const ExportButton = ({ sessionId, videoId, disabled = false }) => {
 
         await downloadFile(downloadEndpoint, filename);
 
-        setExportProgress('Download complete!');
+        setExportProgress('Downloaded!');
         setTimeout(() => {
           setExportProgress(null);
           setIsExporting(false);
