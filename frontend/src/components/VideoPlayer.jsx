@@ -138,11 +138,12 @@ const VideoPlayer = ({ videoUrl, subtitles = [], videoMetadata }) => {
 
   return (
     <div className="w-full bg-black rounded-xl overflow-hidden shadow-lg">
-      <div className="relative w-full aspect-video bg-black">
+      <div className="relative w-full bg-black" style={{ minHeight: '500px', maxHeight: '70vh' }}>
         <video
           ref={videoRef}
           src={videoUrl}
           className="w-full h-full object-contain cursor-pointer"
+          style={{ minHeight: '500px', maxHeight: '70vh' }}
           onClick={togglePlayPause}
         />
 

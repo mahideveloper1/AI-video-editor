@@ -237,18 +237,6 @@ function App() {
                     previewUrl={previewUrl}
                   />
                 </div>
-
-                {session.subtitles.length === 0 && (
-                  <p className="mt-3 text-sm text-gray-600 text-center">
-                    Add at least one subtitle to enable preview and export
-                  </p>
-                )}
-
-                {previewUrl && (
-                  <p className="mt-3 text-sm text-green-600 text-center font-medium">
-                    ✓ Preview ready - review the video above
-                  </p>
-                )}
               </div>
             </>
           )}
