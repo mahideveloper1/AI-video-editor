@@ -4,6 +4,7 @@ Chat API endpoint for subtitle editing via natural language.
 
 from fastapi import APIRouter, HTTPException, status
 from typing import List
+from pathlib import Path
 
 from app.config import settings
 from app.models.schemas import (
@@ -108,8 +109,9 @@ async def chat_with_ai(request: ChatRequest):
         metadata=result.get("extracted_params")
     )
 
-    # Get video URL for preview
-    video_url = f"/uploads/{session.video_path.split('/')[-1]}"
+    # Get video URL for preview (use Path for cross-platform compatibility)
+    video_filename = Path(session.video_path).name
+    video_url = f"/uploads/{video_filename}"
 
     return ChatResponse(
         session_id=request.session_id,
