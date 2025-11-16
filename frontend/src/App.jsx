@@ -22,6 +22,7 @@ function App() {
 
   const [showUploader, setShowUploader] = useState(true);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [isShowingPreview, setIsShowingPreview] = useState(false);
 
   // Handle video upload success
   const handleUploadSuccess = (videoData) => {
@@ -90,10 +91,12 @@ function App() {
         updateSubtitles(response.subtitles);
         // Clear preview since subtitles changed
         setPreviewUrl(null);
+        setIsShowingPreview(false);
       } else if (response.subtitle) {
         updateSubtitles(response.subtitle);
         // Clear preview since subtitles changed
         setPreviewUrl(null);
+        setIsShowingPreview(false);
       }
     } catch (error) {
       console.error('Chat error:', error);
@@ -117,6 +120,7 @@ function App() {
     const exportedVideoUrl = `http://localhost:8000${exportData.download_url}`;
     updateVideoUrl(exportedVideoUrl);
     setPreviewUrl(exportData.download_url);
+    setIsShowingPreview(true);
 
     // Add system message
     addChatMessage({
@@ -132,6 +136,7 @@ function App() {
     const exportedVideoUrl = `http://localhost:8000${exportData.download_url}`;
     updateVideoUrl(exportedVideoUrl);
     setPreviewUrl(exportData.download_url);
+    setIsShowingPreview(true);
 
     // Add system message
     addChatMessage({
@@ -145,6 +150,7 @@ function App() {
   const handleNewUpload = () => {
     setShowUploader(true);
     setPreviewUrl(null);
+    setIsShowingPreview(false);
   };
 
   return (
@@ -215,6 +221,7 @@ function App() {
                   videoUrl={session.videoUrl}
                   subtitles={session.subtitles}
                   videoMetadata={session.videoMetadata}
+                  showSubtitleOverlay={!isShowingPreview}
                 />
               </div>
 

@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { formatDuration } from '../utils/helpers';
 
-const VideoPlayer = ({ videoUrl, subtitles = [], videoMetadata }) => {
+const VideoPlayer = ({ videoUrl, subtitles = [], videoMetadata, showSubtitleOverlay = true }) => {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -40,7 +40,8 @@ const VideoPlayer = ({ videoUrl, subtitles = [], videoMetadata }) => {
 
   // Update subtitle based on current time
   useEffect(() => {
-    if (!subtitles || subtitles.length === 0) {
+    // Don't show subtitle overlay if showSubtitleOverlay is false (e.g., for preview/exported videos)
+    if (!showSubtitleOverlay || !subtitles || subtitles.length === 0) {
       setCurrentSubtitle(null);
       return;
     }
@@ -52,7 +53,7 @@ const VideoPlayer = ({ videoUrl, subtitles = [], videoMetadata }) => {
     });
 
     setCurrentSubtitle(activeSubtitle || null);
-  }, [currentTime, subtitles]);
+  }, [currentTime, subtitles, showSubtitleOverlay]);
 
   const togglePlayPause = () => {
     const video = videoRef.current;
