@@ -63,6 +63,11 @@ app.mount(
     StaticFiles(directory=str(settings.output_dir)),
     name="outputs"
 )
+app.mount(
+    "/temp",
+    StaticFiles(directory=str(settings.temp_dir)),
+    name="temp"
+)
 
 
 # Exception handlers
@@ -115,13 +120,11 @@ async def health_check():
 
 
 # Import and include routers
-from app.api.routes import upload
-app.include_router(upload.router, prefix="/api", tags=["Upload"])
+from app.api.routes import upload, chat, export
 
-# To be added in Phase 3:
-# from app.api.routes import chat, export
-# app.include_router(chat.router, prefix="/api", tags=["Chat"])
-# app.include_router(export.router, prefix="/api", tags=["Export"])
+app.include_router(upload.router, prefix="/api", tags=["Upload"])
+app.include_router(chat.router, prefix="/api", tags=["Chat"])
+app.include_router(export.router, prefix="/api", tags=["Export"])
 
 
 if __name__ == "__main__":
