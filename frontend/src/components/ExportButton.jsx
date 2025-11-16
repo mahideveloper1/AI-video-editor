@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { exportVideo, downloadFile } from '../services/api';
 
-const ExportButton = ({ sessionId, videoId, disabled = false, onExportSuccess }) => {
+const ExportButton = ({ sessionId, videoId, disabled = false, onExportSuccess, previewUrl = null }) => {
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(null);
 
@@ -12,16 +12,28 @@ const ExportButton = ({ sessionId, videoId, disabled = false, onExportSuccess })
     }
 
     setIsExporting(true);
-    setExportProgress('Preparing export...');
 
     try {
-      // Call export API - let backend generate the filename
-      const response = await exportVideo(sessionId);
+      let response;
+      let downloadUrl;
+      let filename;
 
-      setExportProgress('Processing video...');
+      // If we already have a preview, just download it
+      if (previewUrl) {
+        setExportProgress('Downloading...');
+        downloadUrl = previewUrl;
+        filename = `edited-video-${Date.now()}.mp4`;
+      } else {
+        // Generate export first
+        setExportProgress('Preparing export...');
+        response = await exportVideo(sessionId);
 
-      // Check if we have a download URL
-      if (response.download_url || response.downloadUrl) {
+        setExportProgress('Processing video...');
+
+        if (!response.download_url && !response.downloadUrl) {
+          throw new Error('No download URL received from server');
+        }
+
         setExportProgress('Export complete!');
 
         // Notify parent component about successful export (to update video player)
@@ -29,26 +41,23 @@ const ExportButton = ({ sessionId, videoId, disabled = false, onExportSuccess })
           onExportSuccess(response);
         }
 
-        // Extract filename from the download URL and use proper download endpoint
-        const downloadUrl = response.download_url || response.downloadUrl;
-        const filename = response.filename || `edited-video-${Date.now()}.mp4`;
-
-        // Extract the actual filename from the URL (e.g., /outputs/abc123_video.mp4 -> abc123_video.mp4)
-        const urlFilename = downloadUrl.split('/').pop();
-
-        // Use the dedicated download endpoint that forces download instead of playing
-        const downloadEndpoint = `/api/download/${urlFilename}`;
-
-        await downloadFile(downloadEndpoint, filename);
-
-        setExportProgress('Downloaded!');
-        setTimeout(() => {
-          setExportProgress(null);
-          setIsExporting(false);
-        }, 1500);
-      } else {
-        throw new Error('No download URL received from server');
+        downloadUrl = response.download_url || response.downloadUrl;
+        filename = response.filename || `edited-video-${Date.now()}.mp4`;
       }
+
+      // Extract the actual filename from the URL (e.g., /outputs/abc123_video.mp4 -> abc123_video.mp4)
+      const urlFilename = downloadUrl.split('/').pop();
+
+      // Use the dedicated download endpoint that forces download instead of playing
+      const downloadEndpoint = `/api/download/${urlFilename}`;
+
+      await downloadFile(downloadEndpoint, filename);
+
+      setExportProgress('Downloaded!');
+      setTimeout(() => {
+        setExportProgress(null);
+        setIsExporting(false);
+      }, 1500);
     } catch (error) {
       console.error('Export error:', error);
       alert(`Export failed: ${error.message}`);
@@ -93,7 +102,7 @@ const ExportButton = ({ sessionId, videoId, disabled = false, onExportSuccess })
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            <span>Export Video</span>
+            <span>{previewUrl ? 'Download Video' : 'Export & Download'}</span>
           </>
         )}
       </button>

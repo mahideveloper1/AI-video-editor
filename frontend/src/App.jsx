@@ -2,6 +2,7 @@ import { useState } from 'react';
 import VideoUploader from './components/VideoUploader';
 import VideoPlayer from './components/VideoPlayer';
 import ChatInterface from './components/ChatInterface';
+import PreviewButton from './components/PreviewButton';
 import ExportButton from './components/ExportButton';
 import { useVideoSession } from './hooks/useVideoSession';
 import { sendChatMessage } from './services/api';
@@ -20,6 +21,7 @@ function App() {
   } = useVideoSession();
 
   const [showUploader, setShowUploader] = useState(true);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   // Handle video upload success
   const handleUploadSuccess = (videoData) => {
@@ -88,8 +90,12 @@ function App() {
       // Update subtitles if provided
       if (response.subtitles) {
         updateSubtitles(response.subtitles);
+        // Clear preview since subtitles changed
+        setPreviewUrl(null);
       } else if (response.subtitle) {
         updateSubtitles(response.subtitle);
+        // Clear preview since subtitles changed
+        setPreviewUrl(null);
       }
     } catch (error) {
       console.error('Chat error:', error);
@@ -107,16 +113,32 @@ function App() {
     }
   };
 
+  // Handle preview ready
+  const handlePreviewReady = (exportData) => {
+    // Update video player to show preview with burned subtitles
+    const exportedVideoUrl = `http://localhost:8000${exportData.download_url}`;
+    updateVideoUrl(exportedVideoUrl);
+    setPreviewUrl(exportData.download_url);
+
+    // Add system message
+    addChatMessage({
+      type: MESSAGE_TYPES.SYSTEM,
+      content: '✓ Preview ready! Review the video above. If satisfied, click "Download Video" to save it.',
+      timestamp: new Date(),
+    });
+  };
+
   // Handle export success
   const handleExportSuccess = (exportData) => {
     // Update video player to show exported video with burned subtitles
     const exportedVideoUrl = `http://localhost:8000${exportData.download_url}`;
     updateVideoUrl(exportedVideoUrl);
+    setPreviewUrl(exportData.download_url);
 
     // Add system message
     addChatMessage({
       type: MESSAGE_TYPES.SYSTEM,
-      content: '✓ Video exported successfully! Preview the result above. You can continue editing or download the video.',
+      content: '✓ Video exported and downloaded successfully! You can continue editing or download again.',
       timestamp: new Date(),
     });
   };
@@ -124,6 +146,7 @@ function App() {
   // Handle new upload (reset)
   const handleNewUpload = () => {
     setShowUploader(true);
+    setPreviewUrl(null);
   };
 
   return (
@@ -197,17 +220,35 @@ function App() {
                 />
               </div>
 
-              {/* Export Button */}
+              {/* Preview & Export Buttons */}
               <div className="p-5 bg-white rounded-xl shadow-sm">
-                <ExportButton
-                  sessionId={session.sessionId}
-                  videoId={session.videoId}
-                  disabled={!session.videoId || session.subtitles.length === 0}
-                  onExportSuccess={handleExportSuccess}
-                />
+                <div className="flex flex-col gap-3">
+                  {/* Preview Button */}
+                  <PreviewButton
+                    sessionId={session.sessionId}
+                    disabled={!session.videoId || session.subtitles.length === 0}
+                    onPreviewReady={handlePreviewReady}
+                  />
+
+                  {/* Download Button */}
+                  <ExportButton
+                    sessionId={session.sessionId}
+                    videoId={session.videoId}
+                    disabled={!session.videoId || session.subtitles.length === 0}
+                    onExportSuccess={handleExportSuccess}
+                    previewUrl={previewUrl}
+                  />
+                </div>
+
                 {session.subtitles.length === 0 && (
                   <p className="mt-3 text-sm text-gray-600 text-center">
-                    Add at least one subtitle to enable export
+                    Add at least one subtitle to enable preview and export
+                  </p>
+                )}
+
+                {previewUrl && (
+                  <p className="mt-3 text-sm text-green-600 text-center font-medium">
+                    ✓ Preview ready - review the video above
                   </p>
                 )}
               </div>
