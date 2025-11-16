@@ -154,7 +154,14 @@ const ChatInterface = ({
           <button
             type="submit"
             disabled={disabled || isProcessing || !inputValue.trim()}
-            className="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-primary text-white border-0 rounded-lg cursor-pointer transition-all duration-200 outline-none hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/40 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+            className={`
+              flex-shrink-0 w-12 h-12 flex items-center justify-center border-0 rounded-lg cursor-pointer
+              transition-all duration-200 outline-none
+              ${!inputValue.trim() || disabled || isProcessing
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-gradient-to-br from-purple-600 to-purple-800 text-white hover:from-purple-700 hover:to-purple-900 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-600/40'
+              }
+            `}
           >
             <svg
               width="22"
