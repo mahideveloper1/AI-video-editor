@@ -139,16 +139,37 @@ export const getVideoPreview = async (sessionId, videoId) => {
 
 /**
  * Download file from URL
- * @param {string} url - File URL
+ * @param {string} url - File URL (relative or absolute)
  * @param {string} filename - Desired filename
  */
-export const downloadFile = (url, filename) => {
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+export const downloadFile = async (url, filename) => {
+  try {
+    // Construct full URL if it's a relative path
+    const fullUrl = url.startsWith('http') ? url : `${API_BASE_URL}${url}`;
+
+    // Fetch the file as a blob to prevent navigation
+    const response = await fetch(fullUrl);
+    if (!response.ok) {
+      throw new Error('Download failed');
+    }
+
+    const blob = await response.blob();
+
+    // Create a blob URL and trigger download
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Clean up the blob URL
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error('Download error:', error);
+    throw new Error('Failed to download file');
+  }
 };
 
 export default apiClient;

@@ -109,6 +109,16 @@ export const useVideoSession = () => {
   }, []);
 
   /**
+   * Update video URL (for showing exported video)
+   */
+  const updateVideoUrl = useCallback((newVideoUrl) => {
+    setSession((prev) => ({
+      ...prev,
+      videoUrl: newVideoUrl,
+    }));
+  }, []);
+
+  /**
    * Reset session
    */
   const resetSession = useCallback(() => {
@@ -130,6 +140,7 @@ export const useVideoSession = () => {
     initializeSession,
     addChatMessage,
     updateSubtitles,
+    updateVideoUrl,
     setProcessing,
     setError,
     clearError,

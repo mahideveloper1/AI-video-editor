@@ -1,107 +1,56 @@
 # AI Video Editor
 
-✅ **FULLY IMPLEMENTED** - Full-Stack Chat-Based Video Editor
+✅ **FULLY IMPLEMENTED** - Full-Stack AI-Powered Chat-Based Video Subtitle Editor
 
-A complete full-stack application for AI-powered video subtitle editing using natural language. Built with **FastAPI**, **React**, **LangGraph**, and **FFmpeg**.
+A complete full-stack application for intelligent video subtitle editing using natural language. Built with **FastAPI**, **React 19**, **LangGraph**, **Google Gemini AI**, and **FFmpeg**.
 
 ![Status](https://img.shields.io/badge/status-complete-success)
 ![Backend](https://img.shields.io/badge/backend-FastAPI-009688)
-![Frontend](https://img.shields.io/badge/frontend-React-61DAFB)
-![AI](https://img.shields.io/badge/AI-LangGraph-7B68EE)
+![Frontend](https://img.shields.io/badge/frontend-React_19-61DAFB)
+![AI](https://img.shields.io/badge/AI-Gemini_+_LangGraph-7B68EE)
 
 ---
 
-## 🎬 What It Does
+## 🎥 About
 
-Upload a video, chat with AI to add styled subtitles, and export the final video with burned-in subtitles.
+AI Video Editor revolutionizes subtitle editing by allowing you to use natural language instead of manual timing and styling. Simply chat with the AI - "add 'Hello World' at 5 seconds in red color" - and watch as it handles all the technical details.
 
-**Example Chat:**
-```
-You: "Add subtitle 'Hello World!' from 0 to 5 seconds with red color"
-AI:  "✓ Added subtitle: 'Hello World!' from 0.0s to 5.0s with color: red"
-
-You: "Add 'Welcome!' from 5 to 10 seconds, size 48, bold"
-AI:  "✓ Added subtitle: 'Welcome!' from 5.0s to 10.0s with size: 48px, bold"
-```
+The application features real-time preview, multi-round editing, and exports professional videos with permanently burned-in subtitles.
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
-### ✅ Video Upload
-- Drag-and-drop interface
-- Supports MP4, MOV, AVI, WebM
-- Up to 500MB file size
-- Real-time metadata extraction
+### 🤖 Intelligent Chat-Based Editing
+- **Natural Language Commands**: "Add 'Hello' at 5 seconds with red color, size 48"
+- **Context-Aware**: "Make the previous subtitle blue"
+- **Smart Modification**: Edit existing subtitles by referencing them
+- **Flexible Time Parsing**: Supports "5 seconds", "1:30", "2 minutes", etc.
 
-### ✅ AI Chat Interface
-- Natural language subtitle editing
-- Powered by OpenAI/Anthropic + LangGraph
-- Multi-round conversations
-- Context-aware responses
-
-### ✅ Subtitle Styling
-- **Colors**: red, blue, yellow, white, or hex codes (#FF0000)
-- **Fonts**: Arial, Helvetica, Roboto, etc.
+### 🎨 Advanced Subtitle Styling
+- **Colors**: Named colors (red, blue, yellow) or hex codes (#FF0000)
+- **Fonts**: Arial, Helvetica, Roboto, Times New Roman, and more
 - **Sizes**: 12-72 pixels
-- **Position**: top, center, bottom
-- **Styles**: bold, italic
+- **Position**: Top, center, or bottom
+- **Styles**: Bold, italic, or combinations
 
-### ✅ Video Export
-- Burns subtitles into video using FFmpeg
-- High-quality output
-- SRT and ASS subtitle format support
-- One-click download
+### 👁️ Real-Time Preview & Export
+- **Live Preview**: See subtitles overlaid on video instantly
+- **Separate Preview Button**: Generate and review video before downloading
+- **Smart Export**: Download only when satisfied with results
+- **Multi-Round Editing**: Continue editing and re-exporting the same video
 
-### ✅ Session Management
-- Automatic session tracking
-- Chat history preservation
-- TTL-based cleanup
+### 🔄 Intelligent Subtitle Modification
+- **Reference Previous Subtitles**: "Make the last subtitle red"
+- **Index-Based Editing**: "Change subtitle 1 to size 48"
+- **Contextual Understanding**: AI knows which subtitle you're referring to
+- **Partial Updates**: Only changes what you specify, keeps the rest
 
----
-
-## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        FRONTEND                              │
-│  React + Vite + Tailwind CSS + Axios                        │
-│                                                              │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
-│  │VideoUploader │  │  ChatInterface│  │ ExportButton │     │
-│  └──────────────┘  └──────────────┘  └──────────────┘     │
-│  ┌──────────────────────────────────────────────────┐       │
-│  │           VideoPlayer + Subtitles                │       │
-│  └──────────────────────────────────────────────────┘       │
-└────────────────────┬────────────────────────────────────────┘
-                     │ REST API
-┌────────────────────▼────────────────────────────────────────┐
-│                        BACKEND                               │
-│  FastAPI + LangGraph + FFmpeg + Python                      │
-│                                                              │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
-│  │Upload Route  │  │  Chat Route  │  │ Export Route │     │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘     │
-│         │                  │                  │              │
-│  ┌──────▼──────────────────▼──────────────────▼───────┐    │
-│  │              LangGraph Workflow                     │    │
-│  │  ┌───────┐ ┌──────┐ ┌──────┐ ┌──────┐             │    │
-│  │  │Parse  │→│Extract│→│Apply │→│ Gen  │             │    │
-│  │  │Intent │ │Params │ │Edits │ │Reply │             │    │
-│  │  └───────┘ └──────┘ └──────┘ └──────┘             │    │
-│  └──────────────────────────────────────────────────────┘    │
-│                                                              │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
-│  │VideoService  │  │SubtitleService│  │SessionMgr   │     │
-│  │  (FFmpeg)    │  │  (SRT/ASS)   │  │  (Memory)    │     │
-│  └──────────────┘  └──────────────┘  └──────────────┘     │
-└─────────────────────────────────────────────────────────────┘
-                     │
-                     ▼
-            ┌────────────────┐
-            │  OpenAI / Claude│
-            └────────────────┘
-```
+### 🎯 User-Friendly Interface
+- **Drag & Drop Upload**: Simple video upload interface
+- **Clean Chat UI**: Spacious text input with visual feedback
+- **Responsive Video Player**: Adapts to screen size with visible controls
+- **Side-by-Side Actions**: Preview and Download buttons for clear workflow
 
 ---
 
@@ -109,179 +58,268 @@ AI:  "✓ Added subtitle: 'Welcome!' from 5.0s to 10.0s with size: 48px, bold"
 
 ### Prerequisites
 
-- **Python 3.10+**
-- **Node.js 18+**
-- **FFmpeg** ([Install guide](https://ffmpeg.org/download.html))
-- **OpenAI API Key** or **Anthropic API Key**
+Before you begin, ensure you have the following installed:
+
+- **Python 3.9+** - [Download Python](https://www.python.org/downloads/)
+- **Node.js 18+** - [Download Node.js](https://nodejs.org/)
+- **FFmpeg** - Video processing library
+  - **Windows**: Download from [ffmpeg.org](https://ffmpeg.org/download.html) and add to PATH
+  - **macOS**: `brew install ffmpeg`
+  - **Linux**: `sudo apt install ffmpeg`
+- **Google Gemini API Key** - [Get API Key](https://makersuite.google.com/app/apikey) (Free tier available)
 
 ### 1. Clone Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/mahideveloper1/AI-video-editor.git
 cd AI-video-editor
 ```
 
 ### 2. Backend Setup
 
+#### Install Dependencies
+
 ```bash
 cd backend
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Configure environment
-cp .env.example .env
-nano .env  # Add your OPENAI_API_KEY
-
-# Start server
-uvicorn app.main:app --reload
 ```
 
-Server: **http://localhost:8000**
+#### Configure Environment
+
+Create a `.env` file in the `backend` directory:
+
+```env
+# backend/.env
+
+# LLM Configuration
+LLM_PROVIDER=google
+LLM_MODEL=gemini-1.5-flash
+LLM_TEMPERATURE=0.7
+
+# Google Gemini API Key (Get from https://makersuite.google.com/app/apikey)
+GOOGLE_API_KEY=your_gemini_api_key_here
+
+# Optional: Other LLM Providers
+# OPENAI_API_KEY=your_openai_key_here
+# ANTHROPIC_API_KEY=your_anthropic_key_here
+
+# Server Configuration
+HOST=0.0.0.0
+PORT=8000
+
+# CORS Origins (comma-separated)
+CORS_ORIGINS=http://localhost:5173,http://localhost:3000
+
+# File Storage Directories
+UPLOAD_DIR=uploads
+OUTPUT_DIR=outputs
+TEMP_DIR=temp
+
+# Video Processing Settings
+MAX_FILE_SIZE=524288000
+ALLOWED_EXTENSIONS=mp4,avi,mov,mkv,webm
+VIDEO_QUALITY=medium
+FFMPEG_THREADS=4
+
+# Subtitle Defaults
+DEFAULT_FONT_FAMILY=Arial
+DEFAULT_FONT_SIZE=24
+DEFAULT_FONT_COLOR=white
+DEFAULT_SUBTITLE_POSITION=bottom
+
+# Session Management
+SESSION_TIMEOUT=3600
+```
+
+#### Start Backend Server
+
+```bash
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Backend will be available at: **http://localhost:8000**
+
+API Documentation: **http://localhost:8000/docs**
 
 ### 3. Frontend Setup
 
+#### Install Dependencies
+
 ```bash
-cd frontend
-
-# Install dependencies
+cd ../frontend
 npm install
+```
 
-# Configure environment (optional)
-cp .env.example .env
+#### Configure Environment (Optional)
 
-# Start dev server
+Create `.env` file in the `frontend` directory if you need custom API URL:
+
+```env
+# frontend/.env
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+#### Start Development Server
+
+```bash
 npm run dev
 ```
 
-Frontend: **http://localhost:5173**
+Frontend will be available at: **http://localhost:5173**
 
-### 4. Open Browser
+### 4. Verify Installation
 
-Navigate to: **http://localhost:5173**
-
----
-
-## 📖 Usage
-
-### Step 1: Upload Video
-- Drag and drop a video file
-- Or click to browse and select
-- Wait for upload and metadata extraction
-
-### Step 2: Chat to Add Subtitles
-
-Type natural language commands:
-
-```
-Add subtitle "Hello!" from 0 to 3 seconds
-Add "Welcome" from 3 to 6 seconds with red color
-Add subtitle "Title" from 0 to 5 seconds, size 48, bold, Arial font
-Add "The End" from 1:30 to 1:35 with yellow color, position top
-```
-
-### Step 3: Preview
-- Subtitles appear on video player in real-time
-- Play video to verify timing
-- Add more subtitles via chat
-
-### Step 4: Export
-- Click "Export Video" button
-- Wait for processing (1-2 minutes)
-- Download final video
+1. **Check FFmpeg**: Run `ffmpeg -version` in terminal
+2. **Test Backend**: Visit http://localhost:8000/docs
+3. **Test Frontend**: Visit http://localhost:5173
+4. **Upload a video** and try adding a subtitle!
 
 ---
 
-## 🔧 API Documentation
+## 📖 Usage Guide
 
-Once backend is running, visit:
+### Basic Workflow
 
-- **Swagger UI**: http://localhost:8000/api/docs
-- **ReDoc**: http://localhost:8000/api/redoc
-
-### Key Endpoints
-
+#### 1. Upload Video
 ```
-POST   /api/upload              Upload video
-POST   /api/chat                Chat to add subtitles
-POST   /api/export              Export video
-GET    /api/subtitles/:id       Get subtitles
-GET    /api/chat/history/:id    Get chat history
-DELETE /api/subtitles/:id       Clear subtitles
+- Click upload area or drag & drop a video file
+- Supported formats: MP4, AVI, MOV, MKV, WEBM
+- Max file size: 500MB
+- Video metadata extracted automatically
+```
+
+#### 2. Add Subtitles via Chat
+
+**Simple Examples:**
+```
+"Add subtitle 'Hello World' from 0 to 5 seconds"
+"Add 'Welcome!' at 10 seconds with red color"
+"Add 'Chapter 1' from 1:30 to 1:35, size 48, bold"
+```
+
+**Advanced Examples:**
+```
+"Add 'The End' from 2 minutes to 2:10 with yellow color, Arial font, position top"
+"Add subtitle 'Important!' at 30 seconds, size 36, red, bold, italic"
+```
+
+#### 3. Modify Existing Subtitles
+
+**Reference by Position:**
+```
+"Make the previous subtitle red"
+"Change the last subtitle to blue"
+"Make the last one bigger"
+```
+
+**Reference by Index:**
+```
+"Make subtitle 1 bigger"
+"Change subtitle 2 to size 48"
+"Change the first subtitle to yellow"
+```
+
+#### 4. Preview Video
+```
+- Click "Preview Video" button
+- Video generates with burned-in subtitles
+- Review in video player
+- Make more edits if needed
+```
+
+#### 5. Download Video
+```
+- Click "Download Video" button
+- Video downloads with all subtitles permanently burned in
+- Continue editing or start a new session
+```
+
+### Advanced Features
+
+#### Time Format Options
+```
+Seconds:           "5 seconds", "10s", "15"
+Minutes:Seconds:   "1:30", "2:45", "0:30"
+Full Format:       "2 minutes 30 seconds"
+Hours:Min:Sec:     "1:30:45"
+```
+
+#### Color Options
+```
+Named Colors:  red, blue, green, yellow, white, black, orange, purple, pink
+Hex Codes:     #FF0000, #00FF00, #0000FF, #FFFF00
+RGB:           rgb(255, 0, 0)
+```
+
+#### Font Options
+```
+Common Fonts:  Arial, Helvetica, Roboto, Times New Roman
+System Fonts:  Georgia, Verdana, Courier New, Comic Sans MS
+Custom:        Any font name installed on the system
+```
+
+#### Styling Options
+```
+Size:      12-72 pixels (e.g., "size 48")
+Position:  top, center, bottom
+Bold:      "bold" or "make it bold"
+Italic:    "italic" or "make it italic"
 ```
 
 ---
 
-## 🧪 Testing
-
-### Automated Tests
-
-```bash
-cd backend
-
-# Basic test (no video upload)
-python test_workflow.py
-
-# Full test with video
-python test_workflow.py /path/to/video.mp4
-```
-
-### Manual Testing
-
-```bash
-# 1. Health check
-curl http://localhost:8000/api/health
-
-# 2. Upload video
-curl -X POST http://localhost:8000/api/upload \
-     -F "file=@video.mp4"
-
-# 3. Add subtitle
-curl -X POST http://localhost:8000/api/chat \
-     -H "Content-Type: application/json" \
-     -d '{"session_id": "sess_xxx", "message": "Add subtitle Hello from 0 to 5 seconds"}'
-
-# 4. Export
-curl -X POST http://localhost:8000/api/export \
-     -H "Content-Type: application/json" \
-     -d '{"session_id": "sess_xxx"}'
-```
-
----
-
-## 📁 Project Structure
+## 🏗️ Architecture
 
 ```
-AI-video-editor/
-├── frontend/                   # React frontend
-│   ├── src/
-│   │   ├── components/        # UI components
-│   │   ├── services/          # API client
-│   │   ├── hooks/             # React hooks
-│   │   └── utils/             # Utilities
-│   ├── package.json
-│   └── vite.config.js
-│
-├── backend/                    # FastAPI backend
-│   ├── app/
-│   │   ├── main.py            # FastAPI app
-│   │   ├── config.py          # Configuration
-│   │   ├── api/routes/        # API endpoints
-│   │   ├── services/          # Business logic
-│   │   ├── models/            # Data models
-│   │   └── utils/             # Utilities
-│   ├── uploads/               # Uploaded videos
-│   ├── outputs/               # Exported videos
-│   ├── temp/                  # Temporary files
-│   ├── requirements.txt
-│   ├── COMPLETE_GUIDE.md      # Full documentation
-│   └── test_workflow.py       # Test script
-│
-└── README.md                   # This file
+┌─────────────────────────────────────────────────────────────────┐
+│                         FRONTEND (React 19)                      │
+│                                                                  │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
+│  │VideoUploader │  │VideoPlayer   │  │ChatInterface │          │
+│  └──────────────┘  └──────────────┘  └──────────────┘          │
+│  ┌──────────────┐  ┌──────────────┐                            │
+│  │PreviewButton │  │ExportButton  │                            │
+│  └──────────────┘  └──────────────┘                            │
+└────────────────────────┬───────────────────────────────────────┘
+                         │ REST API (Axios)
+┌────────────────────────▼───────────────────────────────────────┐
+│                   BACKEND (FastAPI + Python)                    │
+│                                                                  │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │Upload Route  │  │Chat Route    │  │Export Route  │         │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘         │
+│         │                  │                  │                  │
+│         │       ┌──────────▼──────────┐      │                  │
+│         │       │  LangGraph Workflow  │      │                  │
+│         │       │  ┌────────────────┐ │      │                  │
+│         │       │  │ Parse Intent   │ │      │                  │
+│         │       │  └────────┬───────┘ │      │                  │
+│         │       │  ┌────────▼───────┐ │      │                  │
+│         │       │  │Extract Params  │ │      │                  │
+│         │       │  └────────┬───────┘ │      │                  │
+│         │       │  ┌────────▼───────┐ │      │                  │
+│         │       │  │ Apply Edits    │ │      │                  │
+│         │       │  └────────┬───────┘ │      │                  │
+│         │       │  ┌────────▼───────┐ │      │                  │
+│         │       │  │Generate Reply  │ │      │                  │
+│         │       │  └────────────────┘ │      │                  │
+│         │       └─────────────────────┘      │                  │
+│         │                  │                  │                  │
+│  ┌──────▼──────────────────▼──────────────────▼───────┐         │
+│  │              Services Layer                        │         │
+│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐          │         │
+│  │  │  Video   │ │ Subtitle │ │ Session  │          │         │
+│  │  │ Service  │ │ Service  │ │ Manager  │          │         │
+│  │  │(FFmpeg)  │ │(SRT/ASS) │ │(Memory)  │          │         │
+│  │  └──────────┘ └──────────┘ └──────────┘          │         │
+│  └───────────────────────────────────────────────────┘         │
+└────────────────────────┬───────────────────────────────────────┘
+                         │
+                         ▼
+              ┌──────────────────────┐
+              │  Google Gemini API    │
+              │  (gemini-1.5-flash)   │
+              └──────────────────────┘
 ```
 
 ---
@@ -289,188 +327,286 @@ AI-video-editor/
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **React 19** - UI framework
-- **Vite** - Build tool
-- **Tailwind CSS 4** - Styling
-- **Axios** - HTTP client
+- **React 19** - Latest UI framework with improved features
+- **Vite** - Lightning-fast build tool and dev server
+- **Tailwind CSS 4** - Utility-first CSS framework
+- **Axios** - Promise-based HTTP client
 
 ### Backend
-- **FastAPI** - Web framework
-- **LangChain + LangGraph** - AI workflow orchestration
-- **OpenAI/Anthropic** - LLM providers
-- **FFmpeg** - Video processing
-- **Pydantic** - Data validation
-- **Uvicorn** - ASGI server
+- **FastAPI** - Modern, high-performance Python web framework
+- **LangGraph** - State machine for LLM workflow orchestration
+- **LangChain** - Framework for developing LLM applications
+- **Google Gemini 1.5 Flash** - Fast, efficient AI language model
+- **FFmpeg** - Complete video processing solution
+- **Pydantic** - Data validation using Python type annotations
+- **Uvicorn** - Lightning-fast ASGI server
+
+### Infrastructure
+- **FFmpeg** - Video encoding, subtitle burning
+- **Python 3.9+** - Backend runtime
+- **Node.js 18+** - Frontend runtime
 
 ---
 
-## 🔐 Environment Variables
+## 📁 Project Structure
 
-### Backend (.env)
+```
+AI-video-editor/
+├── backend/                       # FastAPI Backend
+│   ├── app/
+│   │   ├── main.py               # Application entry point
+│   │   ├── config.py             # Configuration management
+│   │   ├── api/
+│   │   │   └── routes/
+│   │   │       ├── upload.py     # Video upload endpoint
+│   │   │       ├── chat.py       # Chat processing endpoint
+│   │   │       └── export.py     # Video export endpoint
+│   │   ├── models/
+│   │   │   ├── schemas.py        # Pydantic models
+│   │   │   └── state.py          # LangGraph state definitions
+│   │   ├── services/
+│   │   │   ├── llm_service.py    # LangGraph workflow
+│   │   │   ├── video_service.py  # FFmpeg integration
+│   │   │   └── subtitle_service.py # SRT/ASS generation
+│   │   └── utils/
+│   │       ├── session.py        # Session management
+│   │       └── helpers.py        # Utility functions
+│   ├── uploads/                  # Uploaded videos
+│   ├── outputs/                  # Exported videos
+│   ├── temp/                     # Temporary subtitle files
+│   ├── requirements.txt          # Python dependencies
+│   └── .env                      # Environment variables
+│
+├── frontend/                      # React Frontend
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── VideoUploader.jsx
+│   │   │   ├── VideoPlayer.jsx
+│   │   │   ├── ChatInterface.jsx
+│   │   │   ├── ChatMessage.jsx
+│   │   │   ├── PreviewButton.jsx
+│   │   │   └── ExportButton.jsx
+│   │   ├── hooks/
+│   │   │   └── useVideoSession.js
+│   │   ├── services/
+│   │   │   └── api.js            # API client
+│   │   ├── utils/
+│   │   │   ├── constants.js
+│   │   │   └── helpers.js
+│   │   ├── App.jsx               # Main application
+│   │   └── main.jsx              # Entry point
+│   ├── package.json              # Node dependencies
+│   └── vite.config.js            # Vite configuration
+│
+└── README.md                      # This file
+```
 
+---
+
+## 🔧 Configuration
+
+### LLM Provider Options
+
+The application supports multiple LLM providers. Configure in `backend/.env`:
+
+**Google Gemini (Recommended - Free Tier)**
 ```env
-# LLM Configuration
+LLM_PROVIDER=google
+LLM_MODEL=gemini-1.5-flash
+GOOGLE_API_KEY=your_key_here
+```
+
+**OpenAI**
+```env
 LLM_PROVIDER=openai
-OPENAI_API_KEY=sk-your-key-here
 LLM_MODEL=gpt-4o-mini
-
-# Or for Anthropic:
-# LLM_PROVIDER=anthropic
-# ANTHROPIC_API_KEY=sk-ant-your-key-here
-# LLM_MODEL=claude-3-5-sonnet-20241022
-
-# Server
-HOST=0.0.0.0
-PORT=8000
-
-# CORS
-CORS_ORIGINS=http://localhost:5173,http://localhost:3000
-
-# Defaults
-DEFAULT_FONT_FAMILY=Arial
-DEFAULT_FONT_SIZE=32
-DEFAULT_FONT_COLOR=white
+OPENAI_API_KEY=your_key_here
 ```
 
-### Frontend (.env)
-
+**Anthropic Claude**
 ```env
-VITE_API_BASE_URL=http://localhost:8000
+LLM_PROVIDER=anthropic
+LLM_MODEL=claude-3-haiku-20240307
+ANTHROPIC_API_KEY=your_key_here
 ```
 
----
+### Video Quality Settings
 
-## 📚 Documentation
-
-- **[Backend README](backend/README.md)** - Backend setup and API
-- **[Frontend README](frontend/README.md)** - Frontend setup and components
-- **[Complete Guide](backend/COMPLETE_GUIDE.md)** - Full usage guide
-- **[Quick Start](backend/QUICKSTART.md)** - Quick setup guide
+Configure in `backend/.env`:
+- `VIDEO_QUALITY=high` - Best quality (CRF 18, slower, larger files)
+- `VIDEO_QUALITY=medium` - Balanced (CRF 23, recommended)
+- `VIDEO_QUALITY=low` - Fast processing (CRF 28, smaller files)
 
 ---
 
 ## 🐛 Troubleshooting
 
-### FFmpeg not found
-```bash
-# Ubuntu
-sudo apt install ffmpeg
+### Common Issues
 
-# macOS
-brew install ffmpeg
-
-# Windows
-# Download from https://ffmpeg.org/download.html
+**Issue: FFmpeg not found**
 ```
+Error: FFmpeg is not installed or not accessible
+```
+**Solution:**
+- Windows: Download from [ffmpeg.org](https://ffmpeg.org/download.html), extract, and add to PATH
+- macOS: `brew install ffmpeg`
+- Linux: `sudo apt install ffmpeg`
+- Verify: `ffmpeg -version`
 
-### API key not working
-- Check `.env` file in backend directory
-- Ensure `OPENAI_API_KEY=sk-...` is set correctly
-- Restart server after changing .env
+**Issue: Invalid API key**
+```
+Error: 401 Invalid authentication credentials
+```
+**Solution:**
+- Check `.env` file has correct `GOOGLE_API_KEY`
+- Get free key from https://makersuite.google.com/app/apikey
+- Restart backend server after updating `.env`
 
-### CORS errors
-- Check `CORS_ORIGINS` in backend/.env
+**Issue: Video upload fails**
+```
+Error: File too large or unsupported format
+```
+**Solution:**
+- Check file size is under 500MB (configurable in `.env`)
+- Use supported formats: MP4, AVI, MOV, MKV, WEBM
+- Ensure video is not corrupted
+
+**Issue: Subtitle export fails on Windows**
+```
+Error: Unable to parse subtitle path
+```
+**Solution:**
+- Ensure no special characters in file paths
+- Avoid spaces in directory names if possible
+- Restart backend server
+- Check FFmpeg is properly installed
+
+**Issue: Port already in use**
+```
+Error: Address already in use
+```
+**Solution:**
+- Change port in `backend/.env`: `PORT=8001`
+- Or kill process using port 8000: `lsof -ti:8000 | xargs kill` (Mac/Linux)
+- Windows: `netstat -ano | findstr :8000` then `taskkill /PID <PID> /F`
+
+**Issue: CORS errors in browser**
+```
+Error: Access blocked by CORS policy
+```
+**Solution:**
+- Check `CORS_ORIGINS` in `backend/.env` includes frontend URL
 - Default should be `http://localhost:5173`
+- Restart backend after changing `.env`
 
-### Session expired
-- Sessions expire after 1 hour (configurable)
-- Upload a new video to create new session
+**Issue: Duplicate subtitles in preview**
+```
+Subtitles appear twice during preview
+```
+**Solution:** This has been fixed in the latest version. Update your code or reload the page.
 
 ---
 
-## 🚀 Deployment
+## 📚 API Documentation
 
-### Production Mode
+Once the backend is running, visit:
 
-**Backend:**
-```bash
-pip install gunicorn
-gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+
+### Key Endpoints
+
 ```
-
-**Frontend:**
-```bash
-npm run build
-# Serve dist/ folder with nginx or static hosting
-```
-
-### Docker (Coming Soon)
-```bash
-docker-compose up
+POST   /api/upload              Upload video file
+POST   /api/chat                Process chat message and add/modify subtitles
+POST   /api/export              Export video with burned subtitles
+GET    /api/download/{filename} Download exported video
+GET    /uploads/{filename}      Access uploaded video
+GET    /outputs/{filename}      Access exported video
 ```
 
 ---
 
-## 🎯 Roadmap
+## 🎯 Feature Highlights
 
-### ✅ Completed
-- [x] Video upload with validation
-- [x] AI chat interface with LangGraph
-- [x] Subtitle styling (font, size, color, position)
-- [x] Multi-round editing
-- [x] Video export with burned subtitles
-- [x] Session management
-- [x] Complete REST API
-- [x] Frontend UI/UX
-- [x] Documentation
+### ✅ Implemented Features
+
+- [x] **Video Upload** - Drag & drop, file validation, metadata extraction
+- [x] **AI Chat Interface** - Natural language subtitle editing
+- [x] **LangGraph Workflow** - 4-node intelligent processing pipeline
+- [x] **Subtitle Modification** - Edit existing subtitles by reference
+- [x] **Smart Styling** - Font, size, color, position, bold, italic
+- [x] **Time Parsing** - Multiple time format support
+- [x] **Real-Time Preview** - Live subtitle overlay
+- [x] **Separate Preview** - Generate and review before download
+- [x] **Video Export** - FFmpeg subtitle burning
+- [x] **Session Management** - Persistent editing sessions
+- [x] **Multi-Round Editing** - Continue editing same video
+- [x] **Responsive UI** - Clean, modern interface
+- [x] **Error Handling** - Comprehensive error messages
+- [x] **API Documentation** - Auto-generated Swagger docs
 
 ### 🔄 Future Enhancements
-- [ ] Speech-to-text (Whisper) integration
-- [ ] Auto-subtitle generation
-- [ ] Video trimming/cutting
-- [ ] Multiple video support
-- [ ] User authentication
-- [ ] Database persistence (PostgreSQL)
-- [ ] Cloud storage (S3)
-- [ ] Docker deployment
-- [ ] Batch processing
-- [ ] WebSocket real-time updates
+
+- [ ] **Auto-Subtitle Generation** - Whisper AI integration for automatic transcription
+- [ ] **Multi-Language Support** - Support for multiple subtitle tracks
+- [ ] **Video Trimming** - Cut and trim videos
+- [ ] **Batch Processing** - Process multiple videos at once
+- [ ] **User Authentication** - User accounts and saved projects
+- [ ] **Database Persistence** - PostgreSQL for permanent storage
+- [ ] **Cloud Storage** - S3/Google Cloud for video files
+- [ ] **Docker Deployment** - Containerized deployment
+- [ ] **WebSocket Updates** - Real-time processing updates
+- [ ] **Advanced Animations** - Subtitle transitions and effects
 
 ---
 
 ## 🤝 Contributing
 
-Contributions welcome! Please:
+Contributions are welcome! Please follow these steps:
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing`)
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
 ---
 
 ## 📄 License
 
-MIT License - see LICENSE file for details
+This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
 ## 🙏 Acknowledgments
 
 - **FastAPI** - Modern Python web framework
-- **LangChain** - LLM application framework
-- **LangGraph** - State machine for LLM workflows
-- **FFmpeg** - Video processing powerhouse
-- **React** - UI library
-- **OpenAI/Anthropic** - LLM providers
+- **LangChain & LangGraph** - LLM application framework and workflow orchestration
+- **Google Gemini** - Powerful AI language model with free tier
+- **FFmpeg** - Complete video processing solution
+- **React Team** - For the amazing React 19
+- **Vite Team** - Lightning-fast build tool
+- **Tailwind CSS** - Excellent utility-first CSS framework
 
 ---
 
-## 📞 Support
+## 📞 Support & Contact
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/AI-video-editor/issues)
-- **Docs**: http://localhost:8000/api/docs (when running)
-- **Email**: your.email@example.com
+- **GitHub Issues**: [Report Issues](https://github.com/mahideveloper1/AI-video-editor/issues)
+- **Documentation**: http://localhost:8000/docs (when running)
+- **Developer**: Mahi Developer
 
 ---
 
-## ⭐ Star History
+## ⭐ Star This Repository
 
 If you find this project useful, please consider giving it a star! ⭐
 
+Your support helps make this project better.
+
 ---
 
-**Built with ❤️ using FastAPI, React, and LangGraph**
+**Built with ❤️ using FastAPI, React 19, Google Gemini, and LangGraph**
 
-**Status**: ✅ Production Ready | All features implemented and tested
+**Status**: ✅ Production Ready | All core features implemented and tested
