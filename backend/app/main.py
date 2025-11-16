@@ -114,9 +114,12 @@ async def health_check():
     )
 
 
-# Import and include routers (will be added in Phase 2)
-# from app.api.routes import upload, chat, export
-# app.include_router(upload.router, prefix="/api", tags=["Upload"])
+# Import and include routers
+from app.api.routes import upload
+app.include_router(upload.router, prefix="/api", tags=["Upload"])
+
+# To be added in Phase 3:
+# from app.api.routes import chat, export
 # app.include_router(chat.router, prefix="/api", tags=["Chat"])
 # app.include_router(export.router, prefix="/api", tags=["Export"])
 
