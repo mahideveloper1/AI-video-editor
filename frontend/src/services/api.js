@@ -78,21 +78,20 @@ export const uploadVideo = async (file, onProgress) => {
  * Send chat message/prompt
  * @param {string} sessionId - Video session ID
  * @param {string} message - User message/prompt
- * @param {string} videoId - Video ID
+ * @param {string} videoId - Video ID (optional, for backward compatibility)
  * @returns {Promise} Chat response
  */
 export const sendChatMessage = async (sessionId, message, videoId) => {
   try {
     const response = await apiClient.post(API_ENDPOINTS.CHAT, {
       session_id: sessionId,
-      video_id: videoId,
       message: message,
     });
 
     return response.data;
   } catch (error) {
     throw new Error(
-      error.response?.data?.message || 'Failed to process message'
+      error.response?.data?.detail || error.response?.data?.message || 'Failed to process message'
     );
   }
 };
@@ -100,20 +99,20 @@ export const sendChatMessage = async (sessionId, message, videoId) => {
 /**
  * Export video with burned subtitles
  * @param {string} sessionId - Video session ID
- * @param {string} videoId - Video ID
+ * @param {string} filename - Optional output filename
  * @returns {Promise} Export response with download URL
  */
-export const exportVideo = async (sessionId, videoId) => {
+export const exportVideo = async (sessionId, filename = null) => {
   try {
     const response = await apiClient.post(API_ENDPOINTS.EXPORT, {
       session_id: sessionId,
-      video_id: videoId,
+      filename: filename,
     });
 
     return response.data;
   } catch (error) {
     throw new Error(
-      error.response?.data?.message || 'Failed to export video'
+      error.response?.data?.detail || error.response?.data?.message || 'Failed to export video'
     );
   }
 };
