@@ -4,6 +4,7 @@ import VideoPlayer from './components/VideoPlayer';
 import ChatInterface from './components/ChatInterface';
 import PreviewButton from './components/PreviewButton';
 import ExportButton from './components/ExportButton';
+import SilenceRemoval from './components/SilenceRemoval';
 import { useVideoSession } from './hooks/useVideoSession';
 import { sendChatMessage } from './services/api';
 import { MESSAGE_TYPES } from './utils/constants';
@@ -23,6 +24,7 @@ function App() {
   const [showUploader, setShowUploader] = useState(true);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isShowingPreview, setIsShowingPreview] = useState(false);
+  const [silenceData, setSilenceData] = useState(null);
 
   // Handle video upload success
   const handleUploadSuccess = (videoData) => {
@@ -30,6 +32,12 @@ function App() {
 
     // Initialize session with video data
     initializeSession(videoData);
+
+    // Store silence detection data if available
+    if (videoData.silence_detection) {
+      setSilenceData(videoData.silence_detection);
+      console.log('Silence detection:', videoData.silence_detection);
+    }
 
     // Hide uploader, show player
     setShowUploader(false);
@@ -146,11 +154,31 @@ function App() {
     });
   };
 
+  // Handle silence removed
+  const handleSilenceRemoved = (data) => {
+    console.log('Silence removed:', data);
+
+    // Update video URL to the new video without silence
+    const newVideoUrl = `http://localhost:8000${data.preview_url}`;
+    updateVideoUrl(newVideoUrl);
+
+    // Clear silence data
+    setSilenceData(null);
+
+    // Add system message
+    addChatMessage({
+      type: MESSAGE_TYPES.SYSTEM,
+      content: `✓ ${data.message}. Video duration reduced from ${data.stats.total_duration}s to ${data.stats.duration_after_removal}s.`,
+      timestamp: new Date(),
+    });
+  };
+
   // Handle new upload (reset)
   const handleNewUpload = () => {
     setShowUploader(true);
     setPreviewUrl(null);
     setIsShowingPreview(false);
+    setSilenceData(null);
   };
 
   return (
@@ -224,6 +252,15 @@ function App() {
                   showSubtitleOverlay={!isShowingPreview}
                 />
               </div>
+
+              {/* Silence Removal */}
+              {silenceData && (
+                <SilenceRemoval
+                  sessionId={session.sessionId}
+                  silenceData={silenceData}
+                  onSilenceRemoved={handleSilenceRemoved}
+                />
+              )}
 
               {/* Preview & Export Buttons */}
               <div className="p-5 bg-white rounded-xl shadow-sm">
