@@ -21,7 +21,7 @@ const SilenceRemoval = ({ sessionId, silenceData, onSilenceRemoved }) => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/remove-silence`, {
+      const response = await fetch(`${API_BASE_URL}/api/remove-silence`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
