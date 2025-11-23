@@ -140,10 +140,7 @@ async def upload_video(
             video_path=str(video_path),
             metadata=metadata
         )
-
-        # Store silence data in session if available
-        if silence_data:
-            session.silence_data = silence_data
+        # Note: silence_data is returned in the response, not stored in session
 
     except Exception as e:
         # Clean up on error
